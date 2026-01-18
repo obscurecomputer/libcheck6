@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-package computer.obscure.libcheck6.manager
+package computer.obscure.libcheck6
 
 import android.content.Context
+import computer.obscure.libcheck6.manager.VariaRadarManager
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

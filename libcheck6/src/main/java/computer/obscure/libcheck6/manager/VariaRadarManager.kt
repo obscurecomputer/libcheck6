@@ -16,6 +16,7 @@
 
 package computer.obscure.libcheck6.manager
 
+import android.Manifest
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
@@ -23,8 +24,8 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
-import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import computer.obscure.libcheck6.model.RadarThreat
 import computer.obscure.libcheck6.util.VariaRadarConstants
 import java.util.UUID
@@ -42,10 +43,11 @@ class VariaRadarManager(private val context: Context) {
     var onConnectionFailed: ((BluetoothDevice) -> Unit)? = null
 
     private val gattCallback = object : BluetoothGattCallback() {
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             val device = gatt?.device ?: return
 
-            // ✅ Check the status first
+            // Check the status first
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 Log.e(TAG, "GATT connection error. Status: $status")
                 onConnectionFailed?.invoke(device)
@@ -68,22 +70,13 @@ class VariaRadarManager(private val context: Context) {
             }
         }
 
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.i(TAG, "Services discovered.")
                 enableRadarNotifications(gatt)
             } else {
                 Log.w(TAG, "onServicesDiscovered received: $status")
-            }
-        }
-
-        @Deprecated("Used for Android API <= 32")
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic
-        ) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                handleCharacteristicChanged(characteristic.uuid, characteristic.value)
             }
         }
 
@@ -103,6 +96,7 @@ class VariaRadarManager(private val context: Context) {
         }
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun connect(device: BluetoothDevice) {
         if (bluetoothGatt == null) {
             bluetoothGatt = device.connectGatt(context, false, gattCallback)
@@ -110,10 +104,12 @@ class VariaRadarManager(private val context: Context) {
         }
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     fun disconnect() {
         bluetoothGatt?.disconnect()
     }
 
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
     private fun enableRadarNotifications(gatt: BluetoothGatt?) {
         val service = gatt?.getService(VariaRadarConstants.RADAR_SERVICE_UUID)
         val characteristic = service?.getCharacteristic(VariaRadarConstants.RADAR_CHARACTERISTIC_UUID)
@@ -126,12 +122,7 @@ class VariaRadarManager(private val context: Context) {
         gatt.setCharacteristicNotification(characteristic, true)
         val descriptor = characteristic.getDescriptor(VariaRadarConstants.CCCD_UUID)
         if (descriptor != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                gatt.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
-            } else {
-                descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                gatt.writeDescriptor(descriptor)
-            }
+            gatt.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
             Log.i(TAG, "Enabled notifications for radar characteristic.")
         } else {
             Log.e(TAG, "CCCD not found for radar characteristic!")
