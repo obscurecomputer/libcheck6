@@ -68,6 +68,19 @@ publishing {
             artifactId = "libcheck6"
             version = "1.0"
 
+            pom {
+                name.set("libcheck6")
+                description.set("Android library for BLE cycling radars")
+                url.set("https://github.com/obscurecomputer/libcheck6")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+            }
+
             afterEvaluate {
                 from(components["release"])
             }
