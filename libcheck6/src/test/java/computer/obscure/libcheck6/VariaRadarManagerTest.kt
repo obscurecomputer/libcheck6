@@ -55,10 +55,11 @@ class VariaRadarManagerTest {
             0x0A, // distance (10)
             0x05  // speed (5)
         )
+        println(data.joinToString { it.toString(16) })
         val result = manager.parseRadarData(data)
         assertEquals(1, result.size)
         assertEquals(1, result[0].threatId)
-        assertEquals(10, result[0].distanceFeet)
+        assertEquals(10, result[0].distanceMeters)
         assertEquals(5, result[0].speedKph)
     }
 
@@ -73,11 +74,11 @@ class VariaRadarManagerTest {
         assertEquals(2, result.size)
         
         assertEquals(1, result[0].threatId)
-        assertEquals(10, result[0].distanceFeet)
+        assertEquals(10, result[0].distanceMeters)
         assertEquals(5, result[0].speedKph)
         
         assertEquals(2, result[1].threatId)
-        assertEquals(20, result[1].distanceFeet)
+        assertEquals(20, result[1].distanceMeters)
         assertEquals(15, result[1].speedKph)
     }
 
