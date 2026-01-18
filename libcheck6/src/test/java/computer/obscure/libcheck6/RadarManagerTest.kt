@@ -17,16 +17,16 @@
 package computer.obscure.libcheck6
 
 import android.content.Context
-import computer.obscure.libcheck6.manager.VariaRadarManager
+import computer.obscure.libcheck6.manager.RadarManager
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class VariaRadarManagerTest {
+class RadarManagerTest {
 
     private val context = mockk<Context>(relaxed = true)
-    private val manager = VariaRadarManager(context)
+    private val manager = RadarManager(context)
 
     @Test
     fun `parseRadarData returns empty list for empty data`() {

@@ -16,6 +16,50 @@
 
 package computer.obscure.libcheck6.model
 
+/**
+ * Represents the current state of the BLE connection to a cycling radar device.
+ *
+ * Use this enum to track and display connection status in your application's UI,
+ * or to make decisions about when certain operations are safe to perform.
+ *
+ * ## State Transitions
+ *
+ * Typical state flow:
+ * ```
+ * DISCONNECTED -> CONNECTING -> CONNECTED
+ *                     |
+ *                     v
+ *              DISCONNECTED (on failure)
+ * ```
+ *
+ * ## Example
+ *
+ * ```kotlin
+ * var connectionStatus = ConnectionStatus.DISCONNECTED
+ *
+ * when (connectionStatus) {
+ *     ConnectionStatus.DISCONNECTED -> showConnectButton()
+ *     ConnectionStatus.CONNECTING -> showLoadingSpinner()
+ *     ConnectionStatus.CONNECTED -> showRadarData()
+ * }
+ * ```
+ */
 enum class ConnectionStatus {
-    DISCONNECTED, CONNECTING, CONNECTED
+    /**
+     * No active connection to a radar device.
+     * The application should allow the user to initiate a new connection.
+     */
+    DISCONNECTED,
+
+    /**
+     * A connection attempt is currently in progress.
+     * The application should show a loading state and disable connection controls.
+     */
+    CONNECTING,
+
+    /**
+     * Successfully connected to a radar device and receiving data.
+     * The application can display radar threat information.
+     */
+    CONNECTED
 }

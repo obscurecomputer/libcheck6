@@ -19,7 +19,33 @@ package computer.obscure.libcheck6.model
 import android.bluetooth.BluetoothDevice
 
 /**
- * Represents a device shown in the scan list.
+ * Represents a Bluetooth device discovered during BLE scanning.
+ *
+ * This class wraps a [BluetoothDevice] with additional metadata useful for managing
+ * a scan list UI, including whether the device is currently visible and when it was
+ * last detected. This allows applications to show devices that have gone out of range
+ * differently from those currently available.
+ *
+ * ## Usage in Scanning UI
+ *
+ * ```kotlin
+ * // Update scan list with new discovery
+ * val scannedDevice = ScannedDevice(
+ *     device = discoveredDevice,
+ *     isCurrentlyFound = true,
+ *     lastSeenTimestamp = System.currentTimeMillis()
+ * )
+ *
+ * // Mark device as no longer visible
+ * val staleDevice = scannedDevice.copy(isCurrentlyFound = false)
+ * ```
+ *
+ * @property device The underlying Android [BluetoothDevice] object.
+ * @property isCurrentlyFound `true` if the device was found in the most recent scan cycle,
+ *                            `false` if it was previously found but is no longer detected.
+ * @property lastSeenTimestamp The timestamp (in milliseconds since epoch) when this device
+ *                             was last detected during scanning. Defaults to 0.
+ * @constructor Creates a new [ScannedDevice] with the specified properties.
  */
 data class ScannedDevice(
     val device: BluetoothDevice,

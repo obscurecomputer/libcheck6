@@ -18,13 +18,13 @@ package computer.obscure.libcheck6
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import computer.obscure.libcheck6.manager.VariaRadarManager
+import computer.obscure.libcheck6.manager.RadarManager
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class VariaRadarManagerInstrumentedTest {
+class RadarManagerInstrumentedTest {
 
     @Test
     fun useAppContext() {
@@ -36,7 +36,7 @@ class VariaRadarManagerInstrumentedTest {
     @Test
     fun testVariaRadarManagerInitialization() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val manager = VariaRadarManager(appContext)
+        val manager = RadarManager(appContext)
         assertNotNull(manager)
     }
 }
